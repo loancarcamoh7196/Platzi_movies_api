@@ -1,0 +1,20 @@
+const express = require('express');
+
+const app = express();
+
+const { config } = require('./config/index');
+
+app.get('/', function(req, res){
+    res.send('Hello word')
+});
+app.get('/json', function(req, res){
+    res.json({hello: 'world'})
+});
+
+app.get('/bisiesto?anno=?', function(req, res){
+    res.send('Hello word')
+});
+
+app.listen(config.port, function(){
+    console.log(`Escuchando en ... http://localhost:${config.port}`)
+});
