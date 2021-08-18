@@ -4,7 +4,7 @@ const MoviesService = require('../services/movies')
 // o tambien function moviesApi(app) {
  let moviesApi = (app) => {
     const router = express.Router();
-    app.use("/api/movies", router);// Es extremadamente importante que se incluya / al principio de la ruta
+    app.use("/api/movies", router);
 
     const moviesService = new MoviesService();
 
@@ -12,6 +12,8 @@ const MoviesService = require('../services/movies')
      * Lista por defecto todas la listas
      */
     router.get("/", async function(req, res, next){
+        // cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
+
         const { tags } = req.query;
 
         try {
@@ -29,10 +31,11 @@ const MoviesService = require('../services/movies')
      * Muestra una pelicula en especifico
      */
     router.get("/:movieId", async function(req, res, next){
+        // cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
         const { movieId } = req.params;
 
         try {
-            const movie = await MoviesService.getMovie({ movieId });
+            const movie = await moviesService.getMovie({ movieId });
             res.status(200).json({
                 data: movie,
                 message: 'movie retrieved',
@@ -45,7 +48,7 @@ const MoviesService = require('../services/movies')
     /**
      * Crea nuevo registro de película
      */
-    router.post("/", async function(req, res, next){
+    router.post("/",  async function(req, res, next){
         const { body: movie } = req;
 
         try {
@@ -62,7 +65,7 @@ const MoviesService = require('../services/movies')
     /**
      * Actualiza registro de pelicula
      */
-    router.put("/:movieId", async function(req, res, next){
+    router.put("/:movieId",  async function(req, res, next){
         const { movieId } = req.params;
         const { body: movie } = req;
 
@@ -80,7 +83,7 @@ const MoviesService = require('../services/movies')
     /**
      * Actualiza parcialmente registro de pelicula
      */
-     router.patch("/:movieId", async function(req, res, next){
+     router.patch("/:movieId",  async function(req, res, next){
         const { movieId } = req.params;
         const { body: movie } = req;
 
@@ -98,20 +101,21 @@ const MoviesService = require('../services/movies')
     /**
      * Eliminar registro de pelicula
      */
-    router.delete("/:movieId", async function(req, res, next){
+    router.delete("/:movieId",  async function(req, res, next){
         const { movieId } = req.params;
 
+        console.log('movieID: ', movieId);
         try {
-            const deleteMovieId = await moviesService.deletedMovie(movieId);
+            const deletedMovieId = await moviesService.deleteMovie({ movieId });
             res.status(200).json({
-                data: deleteMovieId,
+                data: deletedMovieId || '0',
                 message: 'movie deleted',
             })
         } catch(err){
             next(err);
         }
     });
+
 };
-  
 
 module.exports = moviesApi;

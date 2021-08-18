@@ -1,75 +1,40 @@
-const { MongoClient, ObjectId } = require('mongodb'); // Librería oficial para conectarse a MongoDB
-const { config } = require('../config');
+const MongoLib = require('../lib/mongo');
 
-const USER = encodeURIComponent(config.dbUser);
-const PASSWORD = encodeURIComponent(config.dbPassword);
-const DB_NAME = config.dbName;
-
-// const MONGO_URI = `mongodb+srv://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${DB_NAME}?retryWrites=true&w=majority`;
-
-const MONGO_URI = `mongodb+srv://${USER}:${PASSWORD}@${config.dbHost}/${DB_NAME}?retryWrites=true&w=majority`;
-
-class MongoLib {
+class MoviesService {
     constructor() {
-        this.client = new MongoClient(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-        this.dbName = DB_NAME;
+        this.collection = 'movies';
+        this.mongoDB = new MongoLib();
     }
 
-    /**
-     * Encargado de realizar conexión al servicio de Base de Datos - (Mongo)
-     * Patron Singleton - Un usuario - una conexión
-     * @returns objeto conection - un hilo de conexión a la DB
-     */
-    connect() {
-        if (!MongoLib.connection) {
-            MongoLib.connection = new Promise ((resolve, reject) => {
-                this.client.connect(err => {
-                    if (err) {
-                        reject(err);
-                    }
-                    console.log('Connected succesfully to mongo')
-                    resolve(this.client.db(this.dbName))
-                });
-            })
-        }
-
-        return MongoLib.connection;
+    async getMovies({ tags }) {
+        const query = tags && { tags: { $in: tags} };
+        const movies = await this.mongoDB.getAll(this.collection, query);
+        return movies || [];
     }
 
+    async getMovie({ movieId }) {
+        const movie = await this.mongoDB.get(this.collection, movieId);
+        return movie || [];
+    }
+    async createMovie({ movie }) {
+        const createMovieId = await this.mongoDB.create(this.collection, movie);
+        return createMovieId;
+    }
+
+    async updatedMovie({ movieId, movie } = {}){
+        const updatedMovieId = await this.mongoDB.update(this.collection, movieId, movie);
+        return updatedMovieId;
+    }
     
-    getAll(collection, query) {
-        return this.connect().then(db =>{
-            return db.collection(collection).find(query).toArray();
-        });
+    async partialUpdatedMovie({ movieId, movie } = {}) {
+        const updatedMovieId = await this.mongoDB.update(this.collection, movieId, movie);
+        return updatedMovieId;
     }
 
-    get(collection, id) {
-        
-        return this.connect().then(db =>{
-            return db.collection(collection).findOne({ _id: ObjectId(id) });
-        });
-    }
-
-    create (collection, data) {
-        return this.connect().then(db =>{
-            return db.collection(collection).insertOne( data );
-        }).then(result => result.insertedId);
-    }
-
-    update(collection, id, data) {
-        return this.connect().then(db =>{
-            return db.collection(collection).updateOne({ _id: ObjectId(id)}, { $set: data}, { upsert: true } );
-        }).then(result => result.upsertedId || id);
-    }
-
-    delete(collection, id) {
-        
-        return this.connect().then(db =>{
-            return db.collection(collection).deleteOne({ _id: ObjectId(id) });
-        })
-        .then(() => id);
-        
+    async deleteMovie({ movieId }) {
+        const deletedMovieId = await this.mongoDB.delete(this.collection, movieId);
+        return deletedMovieId;
     }
 }
 
-module.exports = MongoLib;
+module.exports = MoviesService;
