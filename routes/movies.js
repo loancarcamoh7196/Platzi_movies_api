@@ -1,6 +1,8 @@
 const express = require('express');
 const MoviesService = require('../services/movies')
 
+// const validationHandler = require('../utils/middleware/validationHandler');
+
 // o tambien function moviesApi(app) {
  let moviesApi = (app) => {
     const router = express.Router();
@@ -13,11 +15,13 @@ const MoviesService = require('../services/movies')
      */
     router.get("/", async function(req, res, next){
         // cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
+        
 
         const { tags } = req.query;
 
         try {
             const movies = await moviesService.getMovies({ tags });
+            throw new Error('ERROR getting movies');
             res.status(200).json({
                 data: movies,
                 message: 'movies listed',
