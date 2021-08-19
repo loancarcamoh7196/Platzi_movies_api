@@ -11,6 +11,7 @@ describe('routes - movies', function() {
     });
 
     const request = testServer(route);// Test especifico para rutas /api/movies
+
     describe('GET /movies', function() {
         it('should respond with status 200', function(done){
             request.get('/api/movies').expect(200, done)
@@ -28,4 +29,11 @@ describe('routes - movies', function() {
         });
 
     });
+
+    // describe('GET /api/movies/:id', function() {
+    //     it('should respond with a movie', function(done) {
+    //         request.get('/api/movies/60e61fbbe3942b102ac99497').expect(200, done)
+    //     });
+
+    // });
 })

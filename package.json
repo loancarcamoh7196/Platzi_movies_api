@@ -32,6 +32,11 @@
     "sinon": "^11.1.2",
     "supertest": "^6.1.6"
   },
+  "lint-staged": {
+    "*.js": [
+      "eslint --cache --fix"
+    ]
+  },
   "nyc": {
     "all": true,
     "include": ["routes", "services", "lib", "utils"]
