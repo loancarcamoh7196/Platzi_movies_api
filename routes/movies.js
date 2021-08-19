@@ -1,10 +1,11 @@
 const express = require('express');
-const MoviesService = require('../services/movies')
+const MoviesService = require('../services/movies');
 
-// const validationHandler = require('../utils/middleware/validationHandler');
+const { movieIdSchema, createMovieSchema, updateMovieSchema } = require('../utils/schemas/movies');
+const validationHandler = require('../utils/middleware/validationHandler');
 
 // o tambien function moviesApi(app) {
- let moviesApi = (app) => {
+let moviesApi = (app) => {
     const router = express.Router();
     app.use("/api/movies", router);
 
@@ -16,7 +17,6 @@ const MoviesService = require('../services/movies')
     router.get("/", async function(req, res, next){
         // cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
         
-
         const { tags } = req.query;
 
         try {
@@ -34,7 +34,7 @@ const MoviesService = require('../services/movies')
     /**
      * Muestra una pelicula en especifico
      */
-    router.get("/:movieId", async function(req, res, next){
+    router.get("/:movieId", validationHandler({ movieId: movieIdSchema }, 'params'), async function(req, res, next){
         // cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
         const { movieId } = req.params;
 
@@ -52,7 +52,7 @@ const MoviesService = require('../services/movies')
     /**
      * Crea nuevo registro de película
      */
-    router.post("/",  async function(req, res, next){
+    router.post("/", validationHandler(createMovieSchema), async function(req, res, next){
         const { body: movie } = req;
 
         try {
@@ -69,7 +69,7 @@ const MoviesService = require('../services/movies')
     /**
      * Actualiza registro de pelicula
      */
-    router.put("/:movieId",  async function(req, res, next){
+    router.put("/:movieId", validationHandler({ movieId: movieIdSchema }),validationHandler(updateMovieSchema), async function(req, res, next){
         const { movieId } = req.params;
         const { body: movie } = req;
 
@@ -87,7 +87,7 @@ const MoviesService = require('../services/movies')
     /**
      * Actualiza parcialmente registro de pelicula
      */
-     router.patch("/:movieId",  async function(req, res, next){
+     router.patch("/:movieId", validationHandler({ movieId: movieIdSchema }),validationHandler(updateMovieSchema), async function(req, res, next){
         const { movieId } = req.params;
         const { body: movie } = req;
 
@@ -105,7 +105,7 @@ const MoviesService = require('../services/movies')
     /**
      * Eliminar registro de pelicula
      */
-    router.delete("/:movieId",  async function(req, res, next){
+    router.delete("/:movieId", validationHandler({ movieId: movieIdSchema }), async function(req, res, next){
         const { movieId } = req.params;
 
         console.log('movieID: ', movieId);
