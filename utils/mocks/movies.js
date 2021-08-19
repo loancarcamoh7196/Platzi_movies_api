@@ -7,4 +7,18 @@
     {"id":"1a46dc67-a64c-4a62-a56b-c275d6b338f8","title":"Man from Snowy River, The","year":2009,"cover":"http://dummyimage.com/170x100.png/5fa2dd/ffffff","description":"Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.","duration":728,"contentRating":"G","source":"http://nhs.uk/amet/consectetuer.xml?tincidunt=morbi&ante=quis&vel=tortor&ipsum=id&praesent=nulla&blandit=ultrices&lacinia=aliquet&erat=maecenas&vestibulum=leo&sed=odio&magna=condimentum&at=id&nunc=luctus&commodo=nec&placerat=molestie&praesent=sed&blandit=justo&nam=pellentesque&nulla=viverra&integer=pede&pede=ac&justo=diam&lacinia=cras&eget=pellentesque&tincidunt=volutpat&eget=dui&tempus=maecenas&vel=tristique&pede=est&morbi=et&porttitor=tempus&lorem=semper&id=est&ligula=quam&suspendisse=pharetra&ornare=magna&consequat=ac&lectus=consequat&in=metus&est=sapien&risus=ut&auctor=nunc&sed=vestibulum&tristique=ante&in=ipsum&tempus=primis&sit=in&amet=faucibus&sem=orci&fusce=luctus&consequat=et&nulla=ultrices&nisl=posuere&nunc=cubilia&nisl=curae&duis=mauris&bibendum=viverra&felis=diam&sed=vitae&interdum=quam&venenatis=suspendisse&turpis=potenti&enim=nullam&blandit=porttitor&mi=lacus&in=at&porttitor=turpis&pede=donec&justo=posuere&eu=metus&massa=vitae&donec=ipsum&dapibus=aliquam&duis=non&at=mauris&velit=morbi","tag":"Drama|Romance|Western"},
 ];
 
-module.exports = { moviesMock }
+function filteredMoviesMock(tag) {
+    return moviesMock.filter(movie => movie.tags.includes(tag));
+}
+
+class MoviesServiceMock {
+    async getMovies() {
+        return Promise.resolve(moviesMock);
+    }
+
+    async createMovie() {
+        return Promise.resolve(moviesMock[0]);
+    }
+}
+
+module.exports = { moviesMock, filteredMoviesMock, MoviesServiceMock }
