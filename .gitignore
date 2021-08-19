@@ -105,3 +105,4 @@ dist
 
 # VS Code editor
 .vscode
+movies-api.code-workspace
