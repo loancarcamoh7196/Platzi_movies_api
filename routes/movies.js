@@ -4,6 +4,9 @@ const MoviesService = require('../services/movies');
 const { movieIdSchema, createMovieSchema, updateMovieSchema } = require('../utils/schemas/movies');
 const validationHandler = require('../utils/middleware/validationHandler');
 
+const cacheResponse = require('../utils/cacheResponse');
+const { FIVE_MINUTES_IN_SECONDS, SIXTY_MINUTES_IN_SECONDS } = require('../utils/time');
+
 // o tambien function moviesApi(app) {
 let moviesApi = (app) => {
     const router = express.Router();
@@ -15,8 +18,7 @@ let moviesApi = (app) => {
      * Lista por defecto todas la listas
      */
     router.get("/", async function(req, res, next){
-        // cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
-        
+        cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
         const { tags } = req.query;
 
         try {
@@ -35,7 +37,7 @@ let moviesApi = (app) => {
      * Muestra una pelicula en especifico
      */
     router.get("/:movieId", validationHandler({ movieId: movieIdSchema }, 'params'), async function(req, res, next){
-        // cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
+        cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
         const { movieId } = req.params;
 
         try {
