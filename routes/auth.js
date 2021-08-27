@@ -3,6 +3,10 @@ const passport = require('passport');
 const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 const ApiKeysService= require('../services/apiKeys');
+const UsersService = require('../services/users');
+const valiadationHandler = require('../utils/middleware/validationHandler');
+
+const { createUserSchema } = require('../utils/schemas/users');
 
 const { config } = require('../config');
 
@@ -13,8 +17,13 @@ function authApi(app) {
     const router = express.Router();
 
     app.use('/api/auth', router);
-    const apiKeysService =  new ApiKeysService();
 
+    const apiKeysService =  new ApiKeysService();
+    const usersService =  new UsersService();
+
+    /**
+     * Ruta Sign In
+     */
     router.post('/sign-in', async (req, res, next)=> {
         const { apiKeyToken } = req.body;
 
@@ -51,6 +60,23 @@ function authApi(app) {
                 next(error);
             }
         })(req, res, next);
+    });
+
+    /**
+     * Ruta Sign Up
+     */
+    router.post('/sign-up', valiadationHandler(createUserSchema), async (req, res, next) => {
+        const {body: user} = req;
+
+        try {
+            const createdUserId =  await usersService.createUser({ user });
+            res.status(201).json({
+                data: createdUserId, 
+                message: 'User created'
+            });
+        } catch (error) {
+            next(error);
+        }
     });
 }
 
