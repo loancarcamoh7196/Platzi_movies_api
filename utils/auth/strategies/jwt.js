@@ -10,7 +10,7 @@ passport.use(
         secretOrKey: config.authJwtSecret,
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     },
-    async (tokenPayload, cb)=>{
+    async (tokenPayload, cb) =>{
         const usersService = new UsersService();
 
         try {

@@ -6,6 +6,7 @@ const { config } = require('./config/index');
 /**
  * Middleware
  */
+const authApi = require('./routes/auth.js');
 const moviesApi  = require('./routes/movies.js'); // Igual es middleware
 const userMoviesApi = require('./routes/userMovies');// APi lista de peliculas usuario
 const { logErrors, wrapErrors, errorHandler } = require('./utils/middleware/errorHandlers.js')
@@ -13,6 +14,7 @@ const notFoundHandler = require('./utils/middleware/notFoundHandler.js');
 
 app.use(express.json()); // Body Parser, conviertecontenido enviado al cliente en json
 
+authApi(app);
 moviesApi(app);
 userMoviesApi(app);
 
