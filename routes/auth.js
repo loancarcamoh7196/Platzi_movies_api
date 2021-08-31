@@ -38,23 +38,26 @@ function authApi(app) {
                 }
 
                 req.login(user, { session: false }, async function(error) {
-                    if (error) next(error);
+                    if (error) {
+                        next(error);
+                    }
 
                     const apiKey = await apiKeysService.getApiKey({ token: apiKeyToken });
 
-                    if(!apiKey) next(boom.unauthorized());
+                    if(!apiKey) {
+                        // console.log('apiKeyToken: ', apiKeyToken)
+                        // console.log('apiKey: ',apiKey);
+                        next(boom.unauthorized('DEbe tener Token'));
+                    } else{
 
-                    const {_id: id, name, email} = user;
-
-                    const payload = { sub: id, name, email, scopes: apiKey.scopes };
-
-                    const token = jwt.sign(payload, config.authJwtSecret, {
-                        expiresIn: '15m'
-                    });
-
-                    return res.status(200).json({token, user: { id, name, email }})
-
-                    
+                        const {_id: id, name, email} = user;
+                        const payload = { sub: id, name, email, scopes: apiKey.scopes };
+                        const token = jwt.sign(payload, config.authJwtSecret, {
+                            expiresIn: '15m'
+                        });
+    
+                        return res.status(200).json({token, user: { id, name, email }})
+                    }
                 })
             } catch (error) {
                 next(error);
