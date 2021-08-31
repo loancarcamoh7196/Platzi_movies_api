@@ -60,9 +60,13 @@ function userMovieApi(app){
     );
 
     /**
-     * Ruta para eliminar una pelicual de la lista del usuario
+     * Ruta para eliminar una pelicula de la lista del usuario
      */
-    router.delete('/', passport.authenticate('jwt', { session: false }), scopesValidationHandler(['delete:userMovies']), validationHandler({ userMovieId: movieIdSchema }, 'params'), 
+    router.delete(
+        '/:userMovieId', 
+        passport.authenticate('jwt', { session: false }),
+        scopesValidationHandler(['delete:user-movies']),
+        validationHandler({ userMovieId: movieIdSchema }, 'params'), 
         async (req, res, next) =>{
             const { userMovieId } = req.params;
             try {
