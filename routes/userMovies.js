@@ -66,7 +66,7 @@ function userMovieApi(app){
         async (req, res, next) =>{
             const { userMovieId } = req.params;
             try {
-                const deletedUserMovieId = await userMoviesService.delteUserMovie({ userMovieId });
+                const deletedUserMovieId = await userMoviesService.deleteUserMovie({ userMovieId });
                 res.status(200).json({
                     data: deletedUserMovieId,
                     message: ' Movie deleted of your list'
