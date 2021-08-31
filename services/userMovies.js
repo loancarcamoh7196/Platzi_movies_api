@@ -1,5 +1,5 @@
 /**
- * Capa de Servico - Datos
+ * Capa de Servicio - Datos
  * Dedicado a userMovies
  */
 const MongoLib = require('../lib/mongo');
