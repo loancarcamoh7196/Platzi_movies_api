@@ -2,7 +2,7 @@
  * Servicio de Capa de Validación
  * Dedicado a userMovies
  */
-const joi = require('@hapi/joi');
+const joi = require('joi');
 
 const { movieIdSchema } = require('./movies');
 const { userIdSchema } = require('./users');
